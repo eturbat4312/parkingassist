@@ -1,121 +1,153 @@
+// filename: frontend/src/components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState, useMemo } from "react";
-import { t } from "@/app/i18n";
-// import logo from "@/public/logo.png";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
 
 type Props = { locale: "en" | "fr" };
 
 export default function Navbar({ locale }: Props) {
-  const pathname = usePathname() || "/";
-  // /fr/... эсвэл /en/... префиксийг цэвэрлээд үлдсэн замыг авна
-  const cleanPath = useMemo(
-    () => pathname.replace(/^\/(fr|en)(?=\/|$)/, "") || "/",
-    [pathname]
-  );
-
   const [open, setOpen] = useState(false);
+  const popRef = useRef<HTMLDivElement>(null);
 
-  const NavLink = ({
-    href,
-    children,
-  }: {
-    href: string;
-    children: React.ReactNode;
-  }) => (
-    <Link
-      href={href}
-      className="block px-3 py-2 rounded-md hover:bg-gray-100 md:hover:bg-transparent md:p-0"
-      onClick={() => setOpen(false)}
-    >
-      {children}
-    </Link>
-  );
+  // ESC → close
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Outside click → close
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (!open) return;
+      const t = e.target as Node;
+      if (popRef.current && !popRef.current.contains(t)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [open]);
 
   return (
-    <nav className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b">
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6 h-16">
-        {/* left: logo */}
-        <Link href={`/${locale}`} className="flex items-center gap-2">
-          <Image
-            // src={logo}
-            src="/logo.png"
-            alt="Parking Assist Logo"
-            width={36}
-            height={36}
-            className="rounded-md"
-          />
-          <span className="text-lg font-semibold text-blue-700">
-            ParkingAssist
-          </span>
-        </Link>
-
-        {/* center/right: desktop links */}
-        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <NavLink href={`/${locale}`}>{t(locale, "navbar_home")}</NavLink>
-          <NavLink href={`/${locale}/booking`}>
-            {t(locale, "navbar_booking")}
-          </NavLink>
-          <NavLink href={`/${locale}/contact`}>
-            {t(locale, "navbar_contact")}
-          </NavLink>
-        </div>
-
-        {/* languages: always visible on mobile & desktop */}
-        <div className="flex items-center gap-2">
+    <nav className="fixed top-0 inset-x-0 z-[1000] bg-white/85 backdrop-blur-md border-b">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="h-16 flex items-center justify-between">
+          {/* Left: logo */}
           <Link
-            href={`/fr${cleanPath === "/" ? "" : cleanPath}`}
-            className={`flex items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-100 ${
-              locale === "fr" ? "font-bold text-blue-700" : ""
-            }`}
+            href={`/${locale}`}
+            className="flex items-center gap-2 shrink-0"
           >
-            🇫🇷 <span className="hidden sm:inline">FR</span>
-          </Link>
-          <Link
-            href={`/en${cleanPath === "/" ? "" : cleanPath}`}
-            className={`flex items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-100 ${
-              locale === "en" ? "font-bold text-blue-700" : ""
-            }`}
-          >
-            🇬🇧 <span className="hidden sm:inline">EN</span>
+            <Image
+              src="/logo.png"
+              alt="ParkingAssist"
+              width={34}
+              height={34}
+              className="rounded-md"
+              priority
+            />
+            <span className="text-lg font-semibold text-blue-700">
+              ParkingAssist
+            </span>
           </Link>
 
-          {/* hamburger (desktop-д нуух) */}
-          <button
-            aria-label="Open menu"
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="ml-2 md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 6h16M4 12h16M4 18h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
+          {/* Center: desktop links */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link
+              href={`/${locale}`}
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+            >
+              Home
+            </Link>
+            <Link
+              href={`/${locale}/booking`}
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+            >
+              Booking
+            </Link>
+            <Link
+              href={`/${locale}#contact`}
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+            >
+              Contact
+            </Link>
+          </div>
 
-      {/* mobile dropdown */}
-      {open && (
-        <div className="md:hidden border-t bg-white">
-          <div className="px-4 py-2 flex flex-col">
-            <NavLink href={`/${locale}`}>{t(locale, "navbar_home")}</NavLink>
-            <NavLink href={`/${locale}/booking`}>
-              {t(locale, "navbar_booking")}
-            </NavLink>
-            <NavLink href={`/${locale}/contact`}>
-              {t(locale, "navbar_contact")}
-            </NavLink>
+          {/* Right: languages (ALWAYS visible) + burger (mobile only for links) */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/fr"
+                className={`px-2 py-1 rounded border text-xs ${
+                  locale === "fr"
+                    ? "bg-gray-900 text-white"
+                    : "bg-white hover:bg-gray-100 text-gray-900"
+                }`}
+              >
+                🇫🇷 FR
+              </Link>
+              <Link
+                href="/en"
+                className={`px-2 py-1 rounded border text-xs ${
+                  locale === "en"
+                    ? "bg-gray-900 text-white"
+                    : "bg-white hover:bg-gray-100 text-gray-900"
+                }`}
+              >
+                🇬🇧 EN
+              </Link>
+            </div>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100"
+              aria-label="Toggle menu"
+              type="button"
+            >
+              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            {/* Mobile dropdown (small card) */}
+            {open && (
+              <>
+                {/* invisible overlay just to catch clicks, NO background */}
+                <div className="fixed inset-0 z-[19999]" aria-hidden="true" />
+                <div
+                  ref={popRef}
+                  className="fixed right-3 top-16 z-[20000] w-72 rounded-2xl bg-white/95 backdrop-blur
+                             shadow-xl ring-1 ring-black/10"
+                >
+                  <div className="py-2">
+                    <Link
+                      href={`/${locale}`}
+                      onClick={() => setOpen(false)}
+                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      href={`/${locale}/booking`}
+                      onClick={() => setOpen(false)}
+                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                    >
+                      Booking
+                    </Link>
+                    <Link
+                      href={`/${locale}#contact`}
+                      onClick={() => setOpen(false)}
+                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                    >
+                      Contact
+                    </Link>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
