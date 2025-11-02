@@ -12,14 +12,12 @@ export default function Navbar({ locale }: Props) {
   const [open, setOpen] = useState(false);
   const popRef = useRef<HTMLDivElement>(null);
 
-  // ESC → close
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  // Outside click → close
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (!open) return;
@@ -34,7 +32,6 @@ export default function Navbar({ locale }: Props) {
     <nav className="fixed top-0 inset-x-0 z-[1000] bg-white/85 backdrop-blur-md border-b">
       <div className="mx-auto max-w-6xl px-4">
         <div className="h-16 flex items-center justify-between">
-          {/* Left: logo */}
           <Link
             href={`/${locale}`}
             className="flex items-center gap-2 shrink-0"
@@ -52,29 +49,27 @@ export default function Navbar({ locale }: Props) {
             </span>
           </Link>
 
-          {/* Center: desktop links */}
           <div className="hidden md:flex items-center gap-2">
             <Link
               href={`/${locale}`}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 text-gray-900"
             >
               Home
             </Link>
             <Link
               href={`/${locale}/booking`}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 text-gray-900"
             >
               Booking
             </Link>
             <Link
               href={`/${locale}#contact`}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100"
+              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 text-gray-900"
             >
               Contact
             </Link>
           </div>
 
-          {/* Right: languages (ALWAYS visible) + burger (mobile only for links) */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <Link
@@ -99,45 +94,46 @@ export default function Navbar({ locale }: Props) {
               </Link>
             </div>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setOpen((v) => !v)}
               className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100"
               aria-label="Toggle menu"
               type="button"
             >
-              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {open ? (
+                <X className="w-6 h-6 text-gray-900" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-900" />
+              )}
             </button>
 
-            {/* Mobile dropdown (small card) */}
             {open && (
               <>
-                {/* invisible overlay just to catch clicks, NO background */}
                 <div className="fixed inset-0 z-[19999]" aria-hidden="true" />
                 <div
                   ref={popRef}
-                  className="fixed right-3 top-16 z-[20000] w-72 rounded-2xl bg-white/95 backdrop-blur
-                             shadow-xl ring-1 ring-black/10"
+                  className="fixed right-3 top-16 z-[20000] w-72 rounded-2xl bg-white shadow-xl ring-1 ring-black/10
+                             text-gray-900"
                 >
                   <div className="py-2">
                     <Link
                       href={`/${locale}`}
                       onClick={() => setOpen(false)}
-                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                      className="block px-4 py-3 text-base hover:bg-gray-50 text-gray-900"
                     >
                       Home
                     </Link>
                     <Link
                       href={`/${locale}/booking`}
                       onClick={() => setOpen(false)}
-                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                      className="block px-4 py-3 text-base hover:bg-gray-50 text-gray-900"
                     >
                       Booking
                     </Link>
                     <Link
                       href={`/${locale}#contact`}
                       onClick={() => setOpen(false)}
-                      className="block px-4 py-3 text-base hover:bg-gray-50"
+                      className="block px-4 py-3 text-base hover:bg-gray-50 text-gray-900"
                     >
                       Contact
                     </Link>
