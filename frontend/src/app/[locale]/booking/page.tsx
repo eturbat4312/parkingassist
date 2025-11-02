@@ -9,7 +9,7 @@ import { t } from "@/app/i18n";
 type Locale = "en" | "fr";
 
 export default function BookingPage() {
-  // Locale-ыг найдвартай тодорхойлох: useParams → pathname fallback
+  // Locale
   const params = useParams<{ locale?: Locale }>();
   const pathname = usePathname() || "";
   const pathLocale = (pathname.split("/")[1] as Locale) || "fr";
@@ -76,19 +76,27 @@ export default function BookingPage() {
     }
   };
 
+  // Шилдэг харагдахуйц input class
+  const inputCls =
+    "w-full text-[16px] bg-white border border-gray-300 rounded-lg p-3 " +
+    "placeholder:text-gray-400 text-gray-900 " +
+    "focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm";
+
+  const labelCls = "block text-base font-semibold mb-1 text-gray-800";
+
   return (
-    <main className="min-h-screen bg-gray-50 py-10 flex justify-center px-4">
+    <main className="min-h-screen bg-gray-50 py-8 sm:py-10 flex justify-center px-4">
       <motion.form
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8 space-y-8"
+        className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-8 text-gray-900"
       >
-        <h1 className="text-3xl font-bold text-center text-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-900">
           {t(locale, "booking.title")}
         </h1>
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-600">
           {t(locale, "booking.availableFor")}{" "}
           <span className="font-medium text-blue-600">
             {t(locale, "booking.cantonGeneva")}
@@ -102,26 +110,28 @@ export default function BookingPage() {
         {/* Personal Info */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold mb-1">
+            <label className={labelCls}>
               {t(locale, "booking.firstName")} *
             </label>
             <input
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              autoComplete="given-name"
+              className={inputCls}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">
+            <label className={labelCls}>
               {t(locale, "booking.lastName")} *
             </label>
             <input
               name="lastName"
               value={form.lastName}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              autoComplete="family-name"
+              className={inputCls}
               required
             />
           </div>
@@ -129,41 +139,41 @@ export default function BookingPage() {
 
         {/* Company */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
-            {t(locale, "booking.company")}
-          </label>
+          <label className={labelCls}>{t(locale, "booking.company")}</label>
           <input
             name="company"
             value={form.company}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            autoComplete="organization"
+            className={inputCls}
           />
         </div>
 
         {/* City / Postal */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold mb-1">
-              {t(locale, "booking.city")} *
-            </label>
+            <label className={labelCls}>{t(locale, "booking.city")} *</label>
             <input
               name="city"
               placeholder={t(locale, "booking.cityPlaceholder")}
               value={form.city}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              autoComplete="address-level2"
+              className={inputCls}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">
+            <label className={labelCls}>
               {t(locale, "booking.postalCode")} *
             </label>
             <input
               name="postalCode"
               value={form.postalCode}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              className={inputCls}
               required
             />
           </div>
@@ -171,14 +181,13 @@ export default function BookingPage() {
 
         {/* Address */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
-            {t(locale, "booking.address")} *
-          </label>
+          <label className={labelCls}>{t(locale, "booking.address")} *</label>
           <input
             name="address"
             value={form.address}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            autoComplete="street-address"
+            className={inputCls}
             required
           />
         </div>
@@ -186,27 +195,26 @@ export default function BookingPage() {
         {/* Email / Phone */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold mb-1">
-              {t(locale, "booking.email")} *
-            </label>
+            <label className={labelCls}>{t(locale, "booking.email")} *</label>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              autoComplete="email"
+              className={inputCls}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">
-              {t(locale, "booking.phone")} *
-            </label>
+            <label className={labelCls}>{t(locale, "booking.phone")} *</label>
             <input
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              inputMode="tel"
+              autoComplete="tel"
+              className={inputCls}
               required
             />
           </div>
@@ -214,10 +222,10 @@ export default function BookingPage() {
 
         {/* Reason */}
         <div>
-          <label className="block text-sm font-semibold mb-2">
+          <label className="block text-base font-semibold mb-2 text-gray-800">
             {t(locale, "booking.reason")}
           </label>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-6 text-gray-900">
             {["Moving", "Renovation", "Delivery", "Other"].map((item) => (
               <label key={item} className="flex items-center gap-2 text-sm">
                 <input
@@ -225,9 +233,11 @@ export default function BookingPage() {
                   value={item}
                   checked={form.reason.includes(item)}
                   onChange={handleChange}
-                  className="accent-blue-600"
+                  className="accent-blue-600 w-4 h-4"
                 />
-                {t(locale, `booking.reason_${item.toLowerCase()}`)}
+                <span className="text-gray-800">
+                  {t(locale, `booking.reason_${item.toLowerCase()}`)}
+                </span>
               </label>
             ))}
           </div>
@@ -235,7 +245,7 @@ export default function BookingPage() {
 
         {/* Spots */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
+          <label className={labelCls}>
             {t(locale, "booking.numberOfSpots")} *
           </label>
           <input
@@ -244,12 +254,12 @@ export default function BookingPage() {
             min={1}
             value={form.numberOfSpots}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            className={inputCls}
             required
           />
         </div>
 
-        {/* Dates (viewPort / whileInView-гүй — "алга болох" баг зассан) */}
+        {/* Dates */}
         <motion.div
           className="grid md:grid-cols-2 gap-6"
           initial={{ opacity: 0, y: 10 }}
@@ -257,7 +267,7 @@ export default function BookingPage() {
           transition={{ duration: 0.3 }}
         >
           <div>
-            <label className="block text-sm font-semibold mb-1">
+            <label className={labelCls}>
               {t(locale, "booking.startDate")} *
             </label>
             <input
@@ -265,12 +275,12 @@ export default function BookingPage() {
               name="startDate"
               value={form.startDate}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className={inputCls}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">
+            <label className={labelCls}>
               {t(locale, "booking.startTime")} *
             </label>
             <input
@@ -278,7 +288,7 @@ export default function BookingPage() {
               name="startTime"
               value={form.startTime}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className={inputCls}
               required
             />
           </div>
@@ -291,28 +301,24 @@ export default function BookingPage() {
           transition={{ duration: 0.3, delay: 0.05 }}
         >
           <div>
-            <label className="block text-sm font-semibold mb-1">
-              {t(locale, "booking.endDate")} *
-            </label>
+            <label className={labelCls}>{t(locale, "booking.endDate")} *</label>
             <input
               type="date"
               name="endDate"
               value={form.endDate}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className={inputCls}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">
-              {t(locale, "booking.endTime")} *
-            </label>
+            <label className={labelCls}>{t(locale, "booking.endTime")} *</label>
             <input
               type="time"
               name="endTime"
               value={form.endTime}
               onChange={handleChange}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className={inputCls}
               required
             />
           </div>
@@ -320,7 +326,7 @@ export default function BookingPage() {
 
         {/* Vehicle */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
+          <label className={labelCls}>
             {t(locale, "booking.vehicleDescription")} *
           </label>
           <textarea
@@ -329,7 +335,7 @@ export default function BookingPage() {
             onChange={handleChange}
             rows={3}
             placeholder={t(locale, "booking.vehiclePlaceholder")}
-            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            className={`${inputCls} resize-y`}
             required
           />
         </div>
@@ -340,7 +346,7 @@ export default function BookingPage() {
           disabled={isSubmitting}
           whileHover={!isSubmitting ? { scale: 1.03 } : {}}
           whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-          className={`w-full py-3 rounded-lg font-semibold transition text-white ${
+          className={`w-full py-3 rounded-lg font-semibold transition text-white text-[16px] ${
             isSubmitting
               ? "bg-blue-400 cursor-not-allowed opacity-70"
               : "bg-blue-600 hover:bg-blue-700"
