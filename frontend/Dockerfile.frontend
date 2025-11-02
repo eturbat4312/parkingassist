@@ -1,0 +1,25 @@
+# Multi-stage build for Next.js (Node 20)
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Build production (Next 16 / Turbopack)
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+# app files needed to run
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/package*.json ./
+# only prod deps
+RUN npm ci --omit=dev
+# Next listens on 3000 by default
+EXPOSE 3000
+CMD ["npm", "run", "start"]
