@@ -31,24 +31,26 @@ export default function Navbar({ locale }: Props) {
   return (
     <nav className="fixed top-0 inset-x-0 z-[1000] bg-white/85 backdrop-blur-md border-b">
       <div className="mx-auto max-w-6xl px-4">
+        {/* NAVBAR HEIGHT stays 64px */}
         <div className="h-16 flex items-center justify-between">
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-2 shrink-0"
-          >
-            <Image
-              src="/logo.png"
-              alt="ParkingAssist"
-              width={34}
-              height={34}
-              className="rounded-md"
-              priority
-            />
-            <span className="text-lg font-semibold text-blue-700">
-              ParkingAssist
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-3">
+            {/* Bigger logo but navbar height unchanged */}
+            <div className="relative h-14 w-14 sm:h-16 sm:w-16 -my-1 overflow-visible shrink-0">
+              <Image
+                src="/logo.png"
+                alt="ParkingAssist"
+                fill
+                className="object-contain rounded-xl transform-gpu scale-125"
+                priority
+              />
+            </div>
+            <span className="text-xl sm:text-2xl font-semibold text-blue-700 leading-none">
+              Park-Assist
             </span>
           </Link>
 
+          {/* Desktop menu */}
           <div className="hidden md:flex items-center gap-2">
             <Link
               href={`/${locale}`}
@@ -70,6 +72,7 @@ export default function Navbar({ locale }: Props) {
             </Link>
           </div>
 
+          {/* Lang + Mobile toggle */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <Link
@@ -107,13 +110,13 @@ export default function Navbar({ locale }: Props) {
               )}
             </button>
 
+            {/* Mobile dropdown */}
             {open && (
               <>
                 <div className="fixed inset-0 z-[19999]" aria-hidden="true" />
                 <div
                   ref={popRef}
-                  className="fixed right-3 top-16 z-[20000] w-72 rounded-2xl bg-white shadow-xl ring-1 ring-black/10
-                             text-gray-900"
+                  className="fixed right-3 top-16 z-[20000] w-72 rounded-2xl bg-white shadow-xl ring-1 ring-black/10 text-gray-900"
                 >
                   <div className="py-2">
                     <Link
