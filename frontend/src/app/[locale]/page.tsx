@@ -1,3 +1,4 @@
+// filename: frontend/src/app/[locale]/page.tsx (эсвэл одоо хэрэглэж буй HomePage file чинь)
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,17 +8,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, FileText, Headphones } from "lucide-react";
 import { t } from "@/app/i18n";
 
-// ⬇️ статик импорт — hash-тай URL болж, locale префикс нөлөөлөхгүй
-// import hero1 from "@/public/hero-bg1.png";
-// import hero2 from "@/public/hero-bg2.png";
-// import hero3 from "@/public/hero-bg3.png";
-
 export default function HomePage() {
   const { locale: rawLocale } = useParams<{ locale: string }>();
   const locale = rawLocale === "en" || rawLocale === "fr" ? rawLocale : "fr";
+  const isFr = locale === "fr";
 
-  // const heroImages = [hero1.src, hero2.src, hero3.src];
-  // ✅ public доторх файлуудыг URL string-ээр хэрэглэнэ
+  // ⬇️ public доторх hero зургууд
   const heroImages = ["/hero-bg1.png", "/hero-bg2.png", "/hero-bg3.png"];
 
   const [current, setCurrent] = useState(0);
@@ -28,6 +24,11 @@ export default function HomePage() {
     );
     return () => clearInterval(id);
   }, [heroImages.length]);
+
+  // ⚠️ Эдгээрийг ӨӨРИЙН ЖИНХЭНЭ МЭДЭЭЛЛЭЭР солиорой
+  const email = "parikingassist.geneve@gmail.com";
+  const phoneDisplay = "+41 22 743 21 11";
+  const phoneHref = "+41227432111";
 
   return (
     <main className="min-h-screen flex flex-col bg-gray-50">
@@ -49,7 +50,7 @@ export default function HomePage() {
             />
           </AnimatePresence>
 
-          {/* ⬇️ Хар overlay — зураг үгүй байсан ч текст үргэлж уншигдана */}
+          {/* Хар overlay — зураг үгүй байсан ч текст үргэлж уншигдана */}
           <div className="absolute inset-0 bg-black/45" />
         </div>
 
@@ -66,19 +67,21 @@ export default function HomePage() {
           <p className="mt-6 text-base sm:text-lg md:text-xl opacity-95">
             {t(locale, "hero_subtitle")}
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 mt-6">
             <Link
               href={`/${locale}/booking`}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-lg font-semibold transition"
             >
               {t(locale, "hero_start")}
             </Link>
+            {/* 👇 Contact товчийг бүр мөсөн авсан
             <Link
               href={`/${locale}/contact`}
               className="bg-white text-blue-700 px-8 py-3 rounded-xl text-lg font-semibold hover:bg-blue-100 transition"
             >
               {t(locale, "hero_contact")}
             </Link>
+            */}
           </div>
         </motion.div>
 
@@ -141,9 +144,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER — буцааж нэмэв */}
-      <footer className="bg-gray-900 text-gray-300 text-center py-8 text-sm mt-auto">
-        <p className="opacity-90">{t(locale, "footer")}</p>
+      {/* FOOTER — contact мэдээлэлтэй хувилбар */}
+      <footer className="bg-gray-900 text-gray-300 py-8 text-sm mt-auto">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+          <div className="flex flex-col items-center sm:items-start gap-1">
+            <span className="font-semibold">
+              {isFr ? "Contact" : "Contact"}
+            </span>
+            <span>
+              Email:{" "}
+              <a
+                href={`mailto:${email}`}
+                className="text-blue-400 hover:text-blue-300 hover:underline"
+              >
+                {email}
+              </a>
+            </span>
+            <span>
+              {isFr ? "Téléphone" : "Phone"}:{" "}
+              <a
+                href={`tel:${phoneHref}`}
+                className="text-blue-400 hover:text-blue-300 hover:underline"
+              >
+                {phoneDisplay}
+              </a>
+            </span>
+          </div>
+
+          <div className="text-xs text-gray-500 text-center sm:text-right">
+            © {new Date().getFullYear()} Park-Assist.{" "}
+            {isFr ? "Tous droits réservés." : "All rights reserved."}
+          </div>
+        </div>
       </footer>
     </main>
   );

@@ -5,12 +5,29 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation"; // ✅ одоогийн path
 
 type Props = { locale: "en" | "fr" };
 
 export default function Navbar({ locale }: Props) {
   const [open, setOpen] = useState(false);
   const popRef = useRef<HTMLDivElement>(null);
+
+  const pathname = usePathname() || "/";
+
+  const buildLocalePath = (target: "en" | "fr") => {
+    const segments = pathname.split("/");
+    if (segments.length > 1) {
+      segments[1] = target;
+    } else {
+      segments.push(target);
+    }
+    const newPath = segments.join("/") || "/";
+    return newPath;
+  };
+
+  const frHref = buildLocalePath("fr");
+  const enHref = buildLocalePath("en");
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -34,18 +51,18 @@ export default function Navbar({ locale }: Props) {
         {/* NAVBAR HEIGHT stays 64px */}
         <div className="h-16 flex items-center justify-between">
           {/* Brand */}
+          {/* Brand */}
           <Link href="/" className="flex items-center gap-3">
-            {/* Bigger logo but navbar height unchanged */}
-            <div className="relative h-14 w-14 sm:h-16 sm:w-16 -my-1 overflow-visible shrink-0">
+            <div className="relative h-16 w-16 -my-2 overflow-visible shrink-0">
               <Image
-                src="/logo.png"
-                alt="ParkingAssist"
+                src="/logo.png" // одоо байгаа logo.png
+                alt="Park-Assist logo"
                 fill
-                className="object-contain rounded-xl transform-gpu scale-125"
+                className="object-contain scale-110" // арай томруулна
                 priority
               />
             </div>
-            <span className="text-xl sm:text-2xl font-semibold text-blue-700 leading-none">
+            <span className="text-[22px] sm:text-[24px] font-semibold text-blue-700 leading-tight">
               Park-Assist
             </span>
           </Link>
@@ -64,19 +81,14 @@ export default function Navbar({ locale }: Props) {
             >
               Booking
             </Link>
-            <Link
-              href={`/${locale}#contact`}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 text-gray-900"
-            >
-              Contact
-            </Link>
+            {/* Contact menu хассан */}
           </div>
 
           {/* Lang + Mobile toggle */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <Link
-                href="/fr"
+                href={frHref}
                 className={`px-2 py-1 rounded border text-xs ${
                   locale === "fr"
                     ? "bg-gray-900 text-white"
@@ -86,7 +98,7 @@ export default function Navbar({ locale }: Props) {
                 🇫🇷 FR
               </Link>
               <Link
-                href="/en"
+                href={enHref}
                 className={`px-2 py-1 rounded border text-xs ${
                   locale === "en"
                     ? "bg-gray-900 text-white"
@@ -133,13 +145,7 @@ export default function Navbar({ locale }: Props) {
                     >
                       Booking
                     </Link>
-                    <Link
-                      href={`/${locale}#contact`}
-                      onClick={() => setOpen(false)}
-                      className="block px-4 py-3 text-base hover:bg-gray-50 text-gray-900"
-                    >
-                      Contact
-                    </Link>
+                    {/* Mobile menu доторхи Contact-ийг бас хассан */}
                   </div>
                 </div>
               </>
