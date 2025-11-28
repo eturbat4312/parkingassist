@@ -68,7 +68,7 @@ export default function BookingPage() {
       !form.email.trim() ||
       !form.phone.trim() ||
       !form.numberOfSpots.trim() ||
-      !form.requiredLength.trim() ||
+      // !form.requiredLength.trim() ||
       !form.startDate.trim() ||
       !form.startTime.trim() ||
       !form.endDate.trim() ||
