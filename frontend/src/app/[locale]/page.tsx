@@ -26,7 +26,7 @@ export default function HomePage() {
   }, [heroImages.length]);
 
   // ⚠️ Эдгээрийг ӨӨРИЙН ЖИНХЭНЭ МЭДЭЭЛЛЭЭР солиорой
-  const email = "parikingassist.geneve@gmail.com";
+  const email = "info@park-assist.ch";
   const phoneDisplay = "+41 22 743 21 11";
   const phoneHref = "+41227432111";
 
