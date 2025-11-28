@@ -34,6 +34,10 @@ export async function POST(req: Request) {
         user: process.env.SMTP_USER, // info@park-assist.ch
         pass: process.env.SMTP_PASS, // Таны нууц үг
       },
+
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
     // Шалгах: SMTP холболт зөв эсэх
